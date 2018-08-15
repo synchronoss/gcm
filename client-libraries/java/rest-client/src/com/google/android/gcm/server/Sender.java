@@ -91,6 +91,7 @@ public class Sender {
       Logger.getLogger(Sender.class.getName());
 
   private final String key;
+  private final String endpoint;
 
   /**
    * Default constructor.
@@ -99,6 +100,18 @@ public class Sender {
    */
   public Sender(String key) {
     this.key = nonNull(key);
+    this.endpoint = GCM_SEND_ENDPOINT;
+  }
+
+  /**
+   * Additional constructor that passes the endpoint as well. Can be used for testing with a mock.
+   *
+   * @param key API key obtained through the Google API Console.
+   * @param endpoint An endpoint that can accept notification requests. Normally the GCM Endpoint.
+   */
+  public Sender(String key, String endpoint) {
+    this.key = nonNull(key);
+    this.endpoint = nonNull(endpoint);
   }
 
   /**
@@ -416,7 +429,7 @@ public class Sender {
     HttpURLConnection conn;
     int status;
     try {
-      conn = post(GCM_SEND_ENDPOINT, "application/json", requestBody);
+      conn = post(endpoint, "application/json", requestBody);
       status = conn.getResponseCode();
     } catch (IOException e) {
       logger.log(Level.FINE, "IOException posting to GCM", e);
